@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etHabitName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Habit name" />
+
+        <EditText
+            android:id="@+id/etHabitDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description (optional)" />
+
+        <EditText
+            android:id="@+id/etHabitGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Goal (e.g. Run 10 times in 2 weeks)" />
+
+        <Button
+            android:id="@+id/btnSubmitHabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Habit"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+
+</ScrollView>
