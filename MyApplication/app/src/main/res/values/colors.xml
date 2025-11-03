@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <!-- App dark palette (extracted from screenshots) -->
+    <color name="bg_default">#1C1626</color>
+    <color name="bg_surface">#1C1626</color>
+    <color name="card_bg">#2A2234</color>
+    <color name="input_bg">#1A1523</color>
+    <color name="input_stroke">#332B3F</color>
+
+    <color name="accent_purple_start">#6366F1</color>
+    <color name="accent_purple_end">#8B5CF6</color>
+    <color name="accent_green">#10B981</color>
+    <color name="accent_cyan">#06B6D4</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#A6A0B0</color>
+    <color name="text_muted">#7B7585</color>
+
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -25,10 +26,19 @@ class LoginActivity : AppCompatActivity() {
         val emailEt = findViewById<EditText>(R.id.etEmail)
         val passwordEt = findViewById<EditText>(R.id.etPassword)
         val signInBtn = findViewById<Button>(R.id.btnSignIn)
-        val registerBtn = findViewById<Button>(R.id.btnRegister)
-
-        registerBtn.setOnClickListener {
+        val googleBtn = findViewById<Button>(R.id.btnGoogle)
+        
+        // Toggle buttons
+        val toggleLogin = findViewById<TextView>(R.id.toggleLogin)
+        val toggleRegister = findViewById<TextView>(R.id.toggleRegister)
+        
+        toggleLogin.isSelected = true
+        toggleRegister.setOnClickListener {
             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+        }
+
+        googleBtn.setOnClickListener {
+            Toast.makeText(this, "Google login not implemented yet", Toast.LENGTH_SHORT).show()
         }
 
         signInBtn.setOnClickListener {

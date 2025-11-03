@@ -15,18 +15,20 @@ class AddHabitActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_habit)
 
-        val etName = findViewById<EditText>(R.id.etHabitName)
-        val etDesc = findViewById<EditText>(R.id.etHabitDescription)
-        val etGoal = findViewById<EditText>(R.id.etHabitGoal)
-        val btn = findViewById<Button>(R.id.btnSubmitHabit)
+        val spHabitName = findViewById<android.widget.Spinner>(R.id.spHabitName)
+        val etGoalAmount = findViewById<EditText>(R.id.etGoalAmount)
+        val btnCreate = findViewById<Button>(R.id.btnCreate)
+        val btnCancel = findViewById<Button>(R.id.btnCancel)
 
-        btn.setOnClickListener {
-            val name = etName.text.toString().trim()
-            val desc = etDesc.text.toString().trim()
-            val goal = etGoal.text.toString().trim()
+        btnCancel.setOnClickListener {
+            finish()
+        }
 
-            if (name.isEmpty() || goal.isEmpty()) {
-                Toast.makeText(this, "Name and goal are required", Toast.LENGTH_SHORT).show()
+        btnCreate.setOnClickListener {
+            val goal = etGoalAmount.text.toString().trim()
+
+            if (goal.isEmpty()) {
+                Toast.makeText(this, "Goal is required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -34,11 +36,10 @@ class AddHabitActivity : AppCompatActivity() {
                 try {
                     // backend expects: name, description (optional), categoryId, goal
                     val body = mutableMapOf<String, Any>(
-                        "name" to name,
+                        "name" to "New Habit",
                         "goal" to goal,
                         "categoryId" to 1
                     )
-                    if (desc.isNotEmpty()) body["description"] = desc
 
                     val resp = Network.api.createHabit(body)
                     if (resp.isSuccessful) {
