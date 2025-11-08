@@ -3,25 +3,48 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/bg_dark"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
     <TextView
-        android:id="@+id/tvStatus"
+        android:id="@+id/tvTodayTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp" />
+        android:text="Today's plan"
+        android:textColor="@color/text_primary"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday, Jul 10"
+        android:textColor="@color/text_secondary"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:alpha="0.7" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp">
 
         <LinearLayout
             android:id="@+id/llSchedules"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
     </ScrollView>
+
+    <!-- Hidden status text required by existing code -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
 </LinearLayout>

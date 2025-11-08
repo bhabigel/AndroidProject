@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App dark palette (extracted from screenshots) -->
-    <color name="bg_default">#1C1626</color>
+    <color name="bg_default">#121212</color>
+    <color name="bg_dark">#121212</color>
     <color name="bg_surface">#1C1626</color>
-    <color name="card_bg">#2A2234</color>
+    <color name="card_bg">#1E1E1E</color>
+    <color name="card_dark">#1E1E1E</color>
     <color name="input_bg">#1A1523</color>
     <color name="input_stroke">#332B3F</color>
 
@@ -15,6 +17,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#A6A0B0</color>
     <color name="text_muted">#7B7585</color>
+    <color name="accent">#00BCD4</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
