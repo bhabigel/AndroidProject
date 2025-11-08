@@ -104,7 +104,7 @@ class ProfileFragment : Fragment() {
             try {
                 val resp = Network.api.listHabits()
                 if (resp.isSuccessful) {
-                    val habits: List<Map<String, Any>> = resp.body() ?: emptyList()
+                    val habits = resp.body() ?: emptyList()
                     container.removeAllViews()
                     
                     if (habits.isEmpty()) {
@@ -116,7 +116,7 @@ class ProfileFragment : Fragment() {
                         addHabitItem(container, "Journal adventures", 0, "#8B5CF6")
                     } else {
                         for (habit in habits) {
-                            val name = habit["name"]?.toString() ?: "Habit"
+                            val name = habit.name
                             val progress = 50 // Calculate from actual data
                             addHabitItem(container, name, progress, "#6366F1")
                         }

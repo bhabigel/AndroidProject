@@ -1,5 +1,8 @@
 package com.firstapp.myapplication.network
 
+import com.firstapp.myapplication.models.HabitResponseDto
+import com.firstapp.myapplication.models.ScheduleRequestDto
+import com.firstapp.myapplication.models.ScheduleResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -39,10 +42,10 @@ interface ApiService {
     suspend fun updateProfile(@Body body: Map<String, Any>): Response<Map<String, Any>>
 
     @GET("habit")
-    suspend fun listHabits(): Response<List<Map<String, Any>>>
+    suspend fun listHabits(): Response<List<HabitResponseDto>>
 
     @POST("habit")
-    suspend fun createHabit(@Body body: Map<String, Any>): Response<Map<String, Any>>
+    suspend fun createHabit(@Body body: Map<String, Any>): Response<HabitResponseDto>
 
     @GET("schedule/day")
     suspend fun getSchedulesByDay(@Query("date") date: String? = null): Response<List<ScheduleResponseDto>>
@@ -57,7 +60,13 @@ interface ApiService {
     suspend fun deleteSchedule(@Path("id") id: Int): Response<Void>
 
     @POST("schedule/custom")
-    suspend fun createCustomSchedule(@Body body: Map<String, Any>): Response<Map<String, Any>>
+    suspend fun createCustomSchedule(@Body body: ScheduleRequestDto): Response<ScheduleResponseDto>
+
+    @POST("schedule/recurring")
+    suspend fun createRecurringSchedule(@Body request: ScheduleRequestDto): Response<List<ScheduleResponseDto>>
+
+    @POST("schedule/recurring/weekdays")
+    suspend fun createWeekdayRecurringSchedule(@Body request: ScheduleRequestDto): Response<List<ScheduleResponseDto>>
 
     @POST("progress")
     suspend fun createProgress(@Body body: Map<String, Any>): Response<Map<String, Any>>

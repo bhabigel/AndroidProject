@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Progr3SS</string>
     <string name="base_url">http://10.0.2.2:3000/</string>
+    <string name="select_habit">Please select a habit</string>
+    <string name="select_unit">Minutes</string>
 </resources>

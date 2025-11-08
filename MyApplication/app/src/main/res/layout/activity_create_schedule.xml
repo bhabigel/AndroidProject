@@ -1,81 +1,408 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/bg_default">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
+        android:id="@+id/scrollContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Habit"
-            android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomButtons"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
+            <!-- Header -->
             <TextView
-                android:id="@+id/tvSelectedHabit"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="(pick a habit)" />
+                android:text="Create Schedule"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="24dp" />
 
-            <Button
-                android:id="@+id/btnPickHabit"
-                android:layout_width="wrap_content"
+            <!-- Habit Selection -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pick" />
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Habit"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spHabitName"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_spinner"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
+
+                    <Button
+                        android:id="@+id/btnCreateNewHabit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+ Create New Habit"
+                        android:textColor="@color/accent_purple_start"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Time Settings -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time Settings"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Start Time -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start Time"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <EditText
+                            android:id="@+id/etStartTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="Select time"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:focusable="false"
+                            android:drawableEnd="@drawable/ic_time"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Duration -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Duration"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <EditText
+                            android:id="@+id/etDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="Enter duration (minutes)"
+                            android:inputType="number"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Repeat Pattern -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Repeat Pattern"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <RadioGroup
+                        android:id="@+id/rgRepeatPattern"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/rbNone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="None"
+                            android:checked="true" />
+
+                        <RadioButton
+                            android:id="@+id/rbDaily"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Daily" />
+
+                        <RadioButton
+                            android:id="@+id/rbWeekdays"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Weekdays" />
+
+                        <RadioButton
+                            android:id="@+id/rbWeekends"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Weekends" />
+
+                        <RadioButton
+                            android:id="@+id/rbCustom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Custom" />
+                    </RadioGroup>
+
+                    <!-- Custom Days (initially hidden) -->
+                    <LinearLayout
+                        android:id="@+id/layoutCustomDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:layout_marginTop="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select Days"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipGroupDays"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="false">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipMonday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mon"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipTuesday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tue"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipWednesday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Wed"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipThursday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thu"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipFriday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fri"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipSaturday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sat"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipSunday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sun"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                        </com.google.android.material.chip.ChipGroup>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Number of Weeks"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp" />
+
+                        <EditText
+                            android:id="@+id/etNumberOfWeeks"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="Enter number of weeks"
+                            android:inputType="number"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Partners Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Partners (Optional)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroupPartners"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/btnAddPartner"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="+ Add Partner"
+                        android:textColor="@color/accent_purple_start"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Notes Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notes"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:id="@+id/etNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input"
+                        android:hint="Add notes..."
+                        android:minHeight="96dp"
+                        android:gravity="top"
+                        android:padding="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:hint="Select date" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start time"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etStartTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:hint="Select time" />
-
-        <EditText
-            android:id="@+id/etNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Notes (optional)" />
+    <!-- Bottom Buttons -->
+    <LinearLayout
+        android:id="@+id/bottomButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/bg_default">
 
         <Button
-            android:id="@+id/btnCreateSchedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Schedule"
-            android:layout_marginTop="12dp" />
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginEnd="8dp" />
 
+        <Button
+            android:id="@+id/btnCreate"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="Create"
+            android:textAllCaps="false"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton" />
     </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>

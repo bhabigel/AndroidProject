@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
         // Wire up FAB and navigation
         val btnFAB = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.btnAddFAB)
         btnFAB.setOnClickListener {
-            startActivity(Intent(this, AddHabitActivity::class.java))
+            showAddMenu()
         }
 
         // Bottom navigation
@@ -147,5 +147,23 @@ class HomeActivity : AppCompatActivity() {
     
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
+    }
+    
+    private fun showAddMenu() {
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_add_menu, null)
+        
+        view.findViewById<Button>(R.id.btnAddSchedule).setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, CreateScheduleActivity::class.java))
+        }
+        
+        view.findViewById<Button>(R.id.btnAddHabit).setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, AddHabitActivity::class.java))
+        }
+        
+        dialog.setContentView(view)
+        dialog.show()
     }
 }

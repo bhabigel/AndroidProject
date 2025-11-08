@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bg_dialog">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What would you like to add?"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnAddSchedule"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Create Schedule"
+        android:textAllCaps="false"
+        android:layout_marginBottom="8dp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton" />
+
+    <Button
+        android:id="@+id/btnAddHabit"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Add New Habit"
+        android:textAllCaps="false"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+</LinearLayout>
