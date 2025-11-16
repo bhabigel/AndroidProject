@@ -3,6 +3,7 @@ package com.firstapp.myapplication.network
 import com.firstapp.myapplication.models.HabitResponseDto
 import com.firstapp.myapplication.models.ScheduleRequestDto
 import com.firstapp.myapplication.models.ScheduleResponseDto
+import com.firstapp.myapplication.models.UpdateScheduleDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -57,7 +58,7 @@ interface ApiService {
     suspend fun getScheduleById(@Path("id") id: Int): Response<ScheduleResponseDto>
 
     @PATCH("schedule/{id}")
-    suspend fun updateSchedule(@Path("id") id: Int, @Body body: Map<String, Any>): Response<ScheduleResponseDto>
+    suspend fun updateSchedule(@Path("id") id: Int, @Body request: UpdateScheduleDto): Response<ScheduleResponseDto>
 
     @DELETE("schedule/{id}")
     suspend fun deleteSchedule(@Path("id") id: Int): Response<Void>

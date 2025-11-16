@@ -1,14 +1,17 @@
 package com.firstapp.myapplication.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.firstapp.myapplication.R
 import com.firstapp.myapplication.models.ProgressResponseDto
 import com.firstapp.myapplication.models.ScheduleResponseDto
+import com.firstapp.myapplication.models.UpdateScheduleDto
 import com.firstapp.myapplication.network.Network
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -18,6 +21,7 @@ class ScheduleDetailActivity : AppCompatActivity() {
     companion object { const val EXTRA_SCHEDULE_ID = "extra_schedule_id" }
 
     private var scheduleId: Int = -1
+    private var isEditingNotes: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +45,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        // Menu button (placeholder)
+        // Three-dot menu button
         findViewById<TextView>(R.id.btnMenu).setOnClickListener {
-            // TODO: Implement menu functionality
+            showOptionsMenu()
         }
 
         // Add Progress Button
@@ -53,8 +57,17 @@ class ScheduleDetailActivity : AppCompatActivity() {
 
         // Edit Notes button
         findViewById<TextView>(R.id.btnEditNotes).setOnClickListener {
-            // TODO: Implement notes editing
-            Toast.makeText(this, "Edit notes functionality coming soon", Toast.LENGTH_SHORT).show()
+            toggleNotesEditMode()
+        }
+
+        // Save Notes button
+        findViewById<TextView>(R.id.btnSaveNotes).setOnClickListener {
+            saveNotes()
+        }
+
+        // Cancel Edit button
+        findViewById<TextView>(R.id.btnCancelEdit).setOnClickListener {
+            cancelNotesEdit()
         }
 
         // Compatibility with old button
@@ -70,6 +83,16 @@ class ScheduleDetailActivity : AppCompatActivity() {
             startActivity(intent)
         } catch (ex: Exception) {
             Toast.makeText(this, "Error opening progress: ${ex.localizedMessage}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun openEditSchedule() {
+        try {
+            val intent = android.content.Intent(this, EditScheduleActivity::class.java)
+            intent.putExtra(EditScheduleActivity.EXTRA_SCHEDULE_ID, scheduleId)
+            startActivity(intent)
+        } catch (ex: Exception) {
+            Toast.makeText(this, "Error opening edit: ${ex.localizedMessage}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -133,11 +156,14 @@ class ScheduleDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvRepeat).text = repeatText
 
         // Notes
-        val notesText = schedule.notes ?: "No notes available"
+        val notesText = if (schedule.notes.isNullOrBlank()) "No notes available" else schedule.notes
         findViewById<TextView>(R.id.tvNotes).text = notesText
 
         // Recent activities
         populateRecentActivities(schedule.progress ?: emptyList())
+
+        // Calculate and display progress
+        calculateAndDisplayProgress(schedule.progress ?: emptyList(), schedule.status)
 
         // Compatibility fields
         findViewById<TextView>(R.id.tvScheduleId).text = "Schedule #$scheduleId"
@@ -255,5 +281,195 @@ class ScheduleDetailActivity : AppCompatActivity() {
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         finish()
+    }
+
+    private fun toggleNotesEditMode() {
+        isEditingNotes = !isEditingNotes
+        
+        val displayLayout = findViewById<LinearLayout>(R.id.layoutNotesDisplay)
+        val editLayout = findViewById<LinearLayout>(R.id.layoutNotesEdit)
+        val editButton = findViewById<TextView>(R.id.btnEditNotes)
+        val notesEditText = findViewById<EditText>(R.id.etNotesEdit)
+        val notesTextView = findViewById<TextView>(R.id.tvNotes)
+        
+        if (isEditingNotes) {
+            // Switch to edit mode
+            displayLayout.visibility = View.GONE
+            editLayout.visibility = View.VISIBLE
+            editButton.text = "👁️ View"
+            
+            // Copy current notes to edit field
+            notesEditText.setText(notesTextView.text.toString())
+            notesEditText.requestFocus()
+            
+            // Show keyboard
+            val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showSoftInput(notesEditText, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        } else {
+            // Switch to view mode
+            displayLayout.visibility = View.VISIBLE
+            editLayout.visibility = View.GONE
+            editButton.text = "✏️ Edit"
+            
+            // Hide keyboard
+            val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(notesEditText.windowToken, 0)
+        }
+    }
+
+    private fun saveNotes() {
+        val notesEditText = findViewById<EditText>(R.id.etNotesEdit)
+        val newNotes = notesEditText.text.toString().trim()
+        
+        lifecycleScope.launch {
+            try {
+                // Show loading state
+                findViewById<TextView>(R.id.btnSaveNotes).text = "Saving..."
+                findViewById<TextView>(R.id.btnSaveNotes).isEnabled = false
+                
+                val updateDto = UpdateScheduleDto(notes = newNotes.ifEmpty { null })
+                val response = Network.api.updateSchedule(scheduleId, updateDto)
+                
+                if (response.isSuccessful) {
+                    // Update the display text
+                    val notesTextView = findViewById<TextView>(R.id.tvNotes)
+                    notesTextView.text = if (newNotes.isEmpty()) "No notes available" else newNotes
+                    
+                    // Exit edit mode
+                    isEditingNotes = false
+                    toggleNotesEditMode()
+                    
+                    Toast.makeText(this@ScheduleDetailActivity, "Notes saved successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Toast.makeText(this@ScheduleDetailActivity, "Failed to save notes: ${response.code()}\n$errorBody", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@ScheduleDetailActivity, "Error saving notes: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            } finally {
+                // Restore button state
+                findViewById<TextView>(R.id.btnSaveNotes).text = "Save"
+                findViewById<TextView>(R.id.btnSaveNotes).isEnabled = true
+            }
+        }
+    }
+
+    private fun cancelNotesEdit() {
+        // Simply exit edit mode without saving
+        isEditingNotes = false
+        toggleNotesEditMode()
+    }
+
+    private fun showOptionsMenu() {
+        val menuView = LayoutInflater.from(this).inflate(R.layout.popup_schedule_options, null)
+        val popupWindow = PopupWindow(menuView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        
+        // Configure popup
+        popupWindow.isOutsideTouchable = true
+        popupWindow.isFocusable = true
+        popupWindow.setBackgroundDrawable(resources.getDrawable(android.R.color.transparent, null))
+        
+        // Set click listeners
+        menuView.findViewById<TextView>(R.id.menuEditSchedule).setOnClickListener {
+            popupWindow.dismiss()
+            openEditSchedule()
+        }
+        
+        menuView.findViewById<TextView>(R.id.menuDeleteSchedule).setOnClickListener {
+            popupWindow.dismiss()
+            showDeleteConfirmation()
+        }
+        
+        // Show popup anchored to the menu button
+        val anchor = findViewById<TextView>(R.id.btnMenu)
+        popupWindow.showAsDropDown(anchor, -200, 0, Gravity.END)
+    }
+
+    private fun showDeleteConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Schedule")
+            .setMessage("Are you sure you want to delete this schedule? This action cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteSchedule()
+            }
+            .setNegativeButton("Cancel", null)
+            .setCancelable(true)
+            .show()
+    }
+
+    private fun deleteSchedule() {
+        lifecycleScope.launch {
+            try {
+                val response = Network.api.deleteSchedule(scheduleId)
+                if (response.isSuccessful) {
+                    Toast.makeText(this@ScheduleDetailActivity, "Schedule deleted successfully", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Toast.makeText(this@ScheduleDetailActivity, "Failed to delete schedule: ${response.code()}\n$errorBody", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@ScheduleDetailActivity, "Error deleting schedule: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun calculateAndDisplayProgress(progressList: List<ProgressResponseDto>, scheduleStatus: String?) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val progressPercentage = findViewById<TextView>(R.id.tvProgressPercentage)
+        
+        val percentage = when {
+            progressList.isNotEmpty() -> {
+                // Calculate based on historical progress data
+                val totalActivities = progressList.size
+                val completedActivities = progressList.count { it.is_completed }
+                if (totalActivities > 0) {
+                    (completedActivities * 100) / totalActivities
+                } else {
+                    0
+                }
+            }
+            scheduleStatus != null -> {
+                // Fallback to schedule status if no progress data
+                when (scheduleStatus.lowercase()) {
+                    "completed" -> 100
+                    "skipped" -> 0
+                    "planned" -> 25 // Assuming planned means some progress but not complete
+                    else -> 0
+                }
+            }
+            else -> 0
+        }
+        
+        // Update UI
+        progressBar.progress = percentage
+        progressPercentage.text = "$percentage%"
+        
+        // Update progress bar color based on percentage
+        updateProgressBarColor(progressBar, percentage)
+    }
+    
+    private fun updateProgressBarColor(progressBar: ProgressBar, percentage: Int) {
+        try {
+            val progressDrawable = progressBar.progressDrawable
+            if (progressDrawable is android.graphics.drawable.LayerDrawable) {
+                val progressLayer = progressDrawable.findDrawableByLayerId(android.R.id.progress)
+                if (progressLayer is android.graphics.drawable.ClipDrawable) {
+                    val shape = progressLayer.drawable as? android.graphics.drawable.GradientDrawable
+                    shape?.setColor(getProgressColor(percentage))
+                }
+            }
+        } catch (e: Exception) {
+            // Fallback: just use the default color if drawable manipulation fails
+        }
+    }
+    
+    private fun getProgressColor(percentage: Int): Int {
+        return when {
+            percentage >= 80 -> resources.getColor(R.color.accent_green, null)
+            percentage >= 50 -> resources.getColor(R.color.accent_cyan, null)
+            percentage >= 25 -> resources.getColor(R.color.accent_purple_start, null)
+            else -> resources.getColor(R.color.text_muted, null)
+        }
     }
 }

@@ -43,6 +43,9 @@
             android:name=".ui.ScheduleDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.EditScheduleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.CreateProgressActivity"
             android:exported="false" />
         <activity
