@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Monday, Jul 10"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:layout_marginTop="4dp"
                 android:textSize="14sp"
                 android:alpha="0.7" />
@@ -73,12 +73,12 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
-                android:tint="@color/accent_purple_start" />
+                android:tint="@color/text_primary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Home"
-                android:textColor="@color/accent_purple_start"
+                android:textColor="@color/text_primary"
                 android:textSize="11sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
@@ -94,12 +94,12 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_assistant"
-                android:tint="@color/text_secondary" />
+                android:tint="@color/text_primary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Assistant"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:textSize="11sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
@@ -115,12 +115,12 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_profile"
-                android:tint="@color/text_secondary" />
+                android:tint="@color/text_primary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:textSize="11sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>

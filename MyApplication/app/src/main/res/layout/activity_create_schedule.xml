@@ -109,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Start Time"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:layout_marginBottom="8dp" />
 
@@ -137,7 +137,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Duration"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:layout_marginBottom="8dp" />
 
@@ -158,7 +158,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Repeat Pattern"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
 
@@ -213,7 +213,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Select Days"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:layout_marginBottom="8dp" />
 
@@ -277,7 +277,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Number of Weeks"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="8dp" />
@@ -331,7 +331,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:text="+ Add Partner"
-                        android:textColor="@color/accent_purple_start"
+                        android:textColor="@color/text_primary"
                         android:textAllCaps="false"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
                 </LinearLayout>

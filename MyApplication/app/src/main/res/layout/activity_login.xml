@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Habit Planner &amp; Tracker"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_primary"
             android:textSize="12sp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="18dp" />
@@ -61,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="Register"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:background="@drawable/bg_toggle_selected"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:layout_marginBottom="8dp" />
 
@@ -103,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Password"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:layout_marginBottom="8dp" />
 
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Forgot password?"
-                android:textColor="@color/accent_purple_start"
+                android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="end" />
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="  or login with  "
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
 
             <View

@@ -2,8 +2,11 @@ package com.firstapp.myapplication.ui
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.firstapp.myapplication.R
@@ -11,6 +14,7 @@ import com.firstapp.myapplication.models.HabitResponseDto
 import com.firstapp.myapplication.models.ScheduleRequestDto
 import com.firstapp.myapplication.network.Network
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,6 +59,13 @@ class CreateScheduleActivity : AppCompatActivity() {
                 etStartTime.setText(time)
             }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
         }
+
+    // Ensure input text is visible on dark background
+    val textColor = ContextCompat.getColor(this, R.color.text_primary)
+    etStartTime.setTextColor(textColor)
+    etDuration.setTextColor(textColor)
+    etNumberOfWeeks.setTextColor(textColor)
+    etNotes.setTextColor(textColor)
 
         // Setup repeat pattern selection
         rgRepeatPattern.setOnCheckedChangeListener { _, checkedId ->
@@ -119,10 +130,25 @@ class CreateScheduleActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     habits = response.body() ?: emptyList()
                     val habitNames = listOf("Select a habit") + habits.map { it.name }
-                    val adapter = ArrayAdapter(this@CreateScheduleActivity, 
-                        android.R.layout.simple_spinner_item, habitNames)
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spHabitName.adapter = adapter
+                        val adapter = object : ArrayAdapter<String>(
+                            this@CreateScheduleActivity,
+                            android.R.layout.simple_spinner_item,
+                            habitNames
+                        ) {
+                            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                                val v = super.getView(position, convertView, parent) as TextView
+                                v.setTextColor(ContextCompat.getColor(this@CreateScheduleActivity, R.color.text_primary))
+                                return v
+                            }
+
+                            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                                val v = super.getDropDownView(position, convertView, parent) as TextView
+                                v.setTextColor(ContextCompat.getColor(this@CreateScheduleActivity, R.color.text_primary))
+                                return v
+                            }
+                        }
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spHabitName.adapter = adapter
                     
                     spHabitName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -161,11 +187,37 @@ class CreateScheduleActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val today = LocalDateTime.now()
+                // Build offset-aware ISO 8601 datetimes (include timezone offset)
                 val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-                val timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
-                val dateStr = today.format(dateFormatter)
-                val startTimeStr = "$dateStr ${startTime}:00"
+                var startTimeStr: String
+                var dateTimeForDateField: String
+                try {
+                    val parts = startTime.split(":")
+                    val hour = parts[0].toInt()
+                    val minute = parts[1].toInt()
+                    val todayDate = java.time.LocalDate.now()
+                    val zone = java.time.ZoneId.systemDefault()
+                    val zdt = java.time.ZonedDateTime.of(
+                        todayDate.year,
+                        todayDate.monthValue,
+                        todayDate.dayOfMonth,
+                        hour,
+                        minute,
+                        0,
+                        0,
+                        zone
+                    )
+                    startTimeStr = zdt.format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    // date field as start of day with offset
+                    val dayStart = zdt.toLocalDate().atStartOfDay(zone)
+                    dateTimeForDateField = dayStart.format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                } catch (e: Exception) {
+                    // fallback to previous local format if parsing fails
+                    val today = LocalDateTime.now()
+                    val dateStr = today.format(dateFormatter)
+                    startTimeStr = "$dateStr" + "T" + "$startTime:00"
+                    dateTimeForDateField = "$dateStr" + "T00:00:00"
+                }
 
                 val repeatPattern = when (repeatPatternId) {
                     R.id.rbNone -> "none"
@@ -176,13 +228,8 @@ class CreateScheduleActivity : AppCompatActivity() {
                     else -> "none"
                 }
 
-                val request = ScheduleRequestDto(
-                    habitId = habitId,
-                    start_time = startTimeStr,
-                    duration_minutes = if (duration.isNotEmpty()) duration.toInt() else null,
-                    repeatPattern = repeatPattern,
-                    notes = if (notes.isNotEmpty()) notes else null
-                )
+                // Build and send request per-type (custom vs recurring) to match backend expectations
+                val gson = Gson()
 
                 val response = when (repeatPattern) {
                     "custom" -> {
@@ -193,27 +240,63 @@ class CreateScheduleActivity : AppCompatActivity() {
                         }
 
                         val weeks = if (numberOfWeeks.isNotEmpty()) numberOfWeeks.toInt() else 4
+                        val weekdayRequest = ScheduleRequestDto(
+                            habitId = habitId,
+                            start_time = startTimeStr,
+                            duration_minutes = if (duration.isNotEmpty()) duration.toInt() else null,
+                            is_custom = true,
+                            daysOfWeek = selectedDaysOfWeek.toList().sorted(),
+                            numberOfWeeks = weeks,
+                            notes = if (notes.isNotEmpty()) notes else null
+                        )
+
+                        // log exact JSON we will send
+                        try { Log.d("CreateSchedule", "Outgoing JSON: ${gson.toJson(weekdayRequest)}") } catch (_: Exception) {}
+
                         withContext(Dispatchers.IO) {
-                            Network.api.createWeekdayRecurringSchedule(request.copy(
-                                daysOfWeek = selectedDaysOfWeek.toList().sorted(),
-                                numberOfWeeks = weeks
-                            ))
+                            Network.api.createWeekdayRecurringSchedule(weekdayRequest)
                         }
                     }
-                    "none" -> withContext(Dispatchers.IO) {
-                        Network.api.createCustomSchedule(request)
+                    "none" -> {
+                        // Custom single schedule (manual time) — do not include repeatPattern field
+                        val customRequest = ScheduleRequestDto(
+                            habitId = habitId,
+                            date = dateTimeForDateField,
+                            start_time = startTimeStr,
+                            duration_minutes = if (duration.isNotEmpty()) duration.toInt() else null,
+                            is_custom = true,
+                            notes = if (notes.isNotEmpty()) notes else null
+                        )
+                        try { Log.d("CreateSchedule", "Outgoing JSON: ${gson.toJson(customRequest)}") } catch (_: Exception) {}
+                        withContext(Dispatchers.IO) {
+                            Network.api.createCustomSchedule(customRequest)
+                        }
                     }
-                    else -> withContext(Dispatchers.IO) {
-                        Network.api.createRecurringSchedule(request)
+                    else -> {
+                        val recurringRequest = ScheduleRequestDto(
+                            habitId = habitId,
+                            start_time = startTimeStr,
+                            duration_minutes = if (duration.isNotEmpty()) duration.toInt() else null,
+                            is_custom = true,
+                            repeatPattern = repeatPattern,
+                            notes = if (notes.isNotEmpty()) notes else null
+                        )
+                        try { Log.d("CreateSchedule", "Outgoing JSON: ${gson.toJson(recurringRequest)}") } catch (_: Exception) {}
+                        withContext(Dispatchers.IO) {
+                            Network.api.createRecurringSchedule(recurringRequest)
+                        }
                     }
                 }
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@CreateScheduleActivity, 
+                    Toast.makeText(this@CreateScheduleActivity,
                         "Schedule created successfully!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Toast.makeText(this@CreateScheduleActivity, 
+                    // try to read error body for better debugging
+                    val err = try { response.errorBody()?.string() } catch (e: Exception) { null }
+                    Log.e("CreateSchedule", "Create failed code=${response.code()} body=$err")
+                    Toast.makeText(this@CreateScheduleActivity,
                         "Failed to create schedule: ${response.code()}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
