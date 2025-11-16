@@ -121,14 +121,14 @@ class HomeFragment : Fragment() {
             else R.drawable.bg_unchecked_circle
         )
         
-        // Set click listener to open CreateProgressActivity
+        // Set click listener to open ScheduleDetailActivity
         cardView.setOnClickListener {
             try {
-                val intent = android.content.Intent(requireContext(), CreateProgressActivity::class.java)
-                intent.putExtra(CreateProgressActivity.EXTRA_SCHEDULE_ID, schedule.id)
+                val intent = android.content.Intent(requireContext(), ScheduleDetailActivity::class.java)
+                intent.putExtra(ScheduleDetailActivity.EXTRA_SCHEDULE_ID, schedule.id)
                 startActivity(intent)
             } catch (ex: Exception) {
-                Log.e(TAG, "Open create progress", ex)
+                Log.e(TAG, "Open schedule details", ex)
             }
         }
         

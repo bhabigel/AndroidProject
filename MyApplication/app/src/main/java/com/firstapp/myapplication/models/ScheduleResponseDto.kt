@@ -12,5 +12,8 @@ data class ScheduleResponseDto(
     val participantIds: List<Int>?,
     val notes: String?,
     val created_at: String,
-    val updated_at: String
+    val updated_at: String,
+    // New fields for detailed schedule response
+    val habit: HabitResponseDto? = null,
+    val progress: List<ProgressResponseDto>? = null
 )

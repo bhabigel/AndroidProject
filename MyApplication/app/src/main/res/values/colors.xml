@@ -13,6 +13,7 @@
     <color name="accent_purple_end">#8B5CF6</color>
     <color name="accent_green">#10B981</color>
     <color name="accent_cyan">#06B6D4</color>
+    <color name="accent_blue">#3B82F6</color>
 
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#A6A0B0</color>
