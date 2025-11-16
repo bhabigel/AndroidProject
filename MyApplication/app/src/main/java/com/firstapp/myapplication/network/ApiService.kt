@@ -44,8 +44,11 @@ interface ApiService {
     @GET("habit")
     suspend fun listHabits(): Response<List<HabitResponseDto>>
 
+    @GET("habit/categories")
+    suspend fun listHabitCategories(): Response<List<com.firstapp.myapplication.models.HabitCategoryResponseDto>>
+
     @POST("habit")
-    suspend fun createHabit(@Body body: Map<String, Any>): Response<HabitResponseDto>
+    suspend fun createHabit(@Body body: Map<String, @kotlin.jvm.JvmSuppressWildcards Any>): Response<HabitResponseDto>
 
     @GET("schedule/day")
     suspend fun getSchedulesByDay(@Query("date") date: String? = null): Response<List<ScheduleResponseDto>>

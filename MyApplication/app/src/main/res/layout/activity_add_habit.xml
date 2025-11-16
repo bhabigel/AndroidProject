@@ -17,6 +17,7 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
+        <!-- Hidden legacy spinner (kept for compatibility) -->
         <Spinner
             android:id="@+id/spHabitName"
             android:layout_width="match_parent"
@@ -24,21 +25,60 @@
             android:background="@drawable/bg_input"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
+        <!-- Category selector (emoji icons) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginTop="12dp" />
+
+        <GridLayout
+            android:id="@+id/glCategoryIcons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:columnCount="5"
+            android:rowCount="2"
+            android:alignmentMode="alignBounds"
+            android:useDefaultMargins="true" />
+
+        <!-- Allow user to type a custom habit name as well -->
         <EditText
             android:id="@+id/etHabitName"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:hint="Or type habit name"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp" />
 
-        <!-- Compatibility fields expected by existing AddHabitActivity (kept hidden) -->
+        <!-- Description (optional) -->
         <EditText
             android:id="@+id/etHabitDescription"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:hint="Description (optional)"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp"
+            android:minLines="3"
+            android:maxLines="6"
+            android:gravity="top" />
 
+        <!-- Compatibility placeholder kept for older code paths (no UI) -->
         <EditText
             android:id="@+id/etHabitGoal"
             android:layout_width="0dp"
