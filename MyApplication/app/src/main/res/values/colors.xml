@@ -7,6 +7,7 @@
     <color name="card_bg">#1E1E1E</color>
     <color name="card_dark">#1E1E1E</color>
     <color name="input_bg">#1A1523</color>
+    <color name="input_background">#1A1523</color>
     <color name="input_stroke">#332B3F</color>
 
     <color name="accent_purple_start">#6366F1</color>

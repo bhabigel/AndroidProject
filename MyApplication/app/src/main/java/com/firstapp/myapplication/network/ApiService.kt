@@ -1,8 +1,10 @@
 package com.firstapp.myapplication.network
 
 import com.firstapp.myapplication.models.HabitResponseDto
+import com.firstapp.myapplication.models.ProfileResponseDto
 import com.firstapp.myapplication.models.ScheduleRequestDto
 import com.firstapp.myapplication.models.ScheduleResponseDto
+import com.firstapp.myapplication.models.UpdateProfileDto
 import com.firstapp.myapplication.models.UpdateScheduleDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -37,10 +39,10 @@ interface ApiService {
     suspend fun resetPasswordViaEmail(@Body body: Map<String, String>): Response<Map<String, String>>
 
     @GET("profile")
-    suspend fun getProfile(): Response<Map<String, Any>>
+    suspend fun getProfile(): Response<ProfileResponseDto>
 
     @PATCH("profile")
-    suspend fun updateProfile(@Body body: Map<String, Any>): Response<Map<String, Any>>
+    suspend fun updateProfile(@Body body: UpdateProfileDto): Response<ProfileResponseDto>
 
     @GET("habit")
     suspend fun listHabits(): Response<List<HabitResponseDto>>
@@ -79,9 +81,9 @@ interface ApiService {
     suspend fun refresh(@Body body: Map<String, String>): Response<AuthResponse>
 
     @GET("habit/user/{userId}")
-    suspend fun getHabitsByUser(@Path("userId") id: Int): Response<List<Map<String, Any>>>
+    suspend fun getHabitsByUser(@Path("userId") id: Int): Response<List<HabitResponseDto>>
 
     @Multipart
     @POST("profile/upload-profile-image")
-    suspend fun uploadProfileImage(@Part file: MultipartBody.Part): Response<Map<String, Any>>
+    suspend fun uploadProfileImage(@Part profileImage: MultipartBody.Part): Response<ProfileResponseDto>
 }

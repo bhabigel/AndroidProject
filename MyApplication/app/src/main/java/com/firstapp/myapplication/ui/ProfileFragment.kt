@@ -48,7 +48,7 @@ class ProfileFragment : Fragment() {
         val btnLogout = view.findViewById<Button>(R.id.btnLogout)
         
         btnEditProfile?.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
         }
         
         btnAddNewHabit?.setOnClickListener {
@@ -81,9 +81,9 @@ class ProfileFragment : Fragment() {
             try {
                 val resp = Network.api.getProfile()
                 if (resp.isSuccessful) {
-                    val body = resp.body()
-                    tvName.text = body?.get("username")?.toString() ?: "User"
-                    tvEmail.text = body?.get("email")?.toString() ?: "email@example.com"
+                    val profile = resp.body()
+                    tvName.text = profile?.username ?: "User"
+                    tvEmail.text = profile?.email ?: "email@example.com"
                 } else {
                     tvName.text = "User"
                     tvEmail.text = "email@example.com"
