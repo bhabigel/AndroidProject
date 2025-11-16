@@ -13,6 +13,8 @@ import com.firstapp.myapplication.R
 import com.firstapp.myapplication.auth.AuthManager
 import com.firstapp.myapplication.network.Network
 import kotlinx.coroutines.launch
+import com.firstapp.myapplication.models.ScheduleResponseDto
+import com.firstapp.myapplication.ui.CreateProgressActivity
 
 class HomeFragment : Fragment() {
     companion object { private const val TAG = "HomeFragment" }
@@ -84,68 +86,53 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun addScheduleCard(container: LinearLayout, schedule: Any) {
-        // Create card layout
-        LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setBackgroundResource(R.drawable.bg_card)
-            setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(72)
-            ).apply {
-                topMargin = dpToPx(8)
+    private fun addScheduleCard(container: LinearLayout, schedule: ScheduleResponseDto) {
+        // Create card layout matching the expected design
+        val layoutInflater = LayoutInflater.from(requireContext())
+        val cardView = layoutInflater.inflate(R.layout.item_schedule, container, false)
+        
+        // Find views in the inflated layout
+        val tvHabitName = cardView.findViewById<TextView>(R.id.tvHabitName)
+        val tvTime = cardView.findViewById<TextView>(R.id.tvTime)
+        val ivHabitIcon = cardView.findViewById<View>(R.id.ivHabitIcon)
+        val ivStatus = cardView.findViewById<View>(R.id.ivStatus)
+        
+        // Set habit name (fallback to notes or generic name)
+        tvHabitName.text = schedule.notes ?: "Habit #${schedule.id}"
+        
+        // Format and set time
+        val timeStr = schedule.start_time?.let { time ->
+            // Extract time portion from ISO datetime or use as-is
+            if (time.contains('T')) {
+                val timePart = time.substringAfter('T').substringBefore('+').substringBefore('Z')
+                val parts = timePart.split(':')
+                if (parts.size >= 2) "${parts[0]}:${parts[1]}" else timePart
+            } else time
+        } ?: "--:--"
+        tvTime.text = timeStr
+        
+        // Set habit icon (placeholder colored square)
+        ivHabitIcon.setBackgroundColor(resources.getColor(R.color.accent_purple_start, null))
+        
+        // Set status icon (check circle or empty circle based on completion)
+        val isCompleted = schedule.status == "completed" // Adjust based on your status values
+        ivStatus.setBackgroundResource(
+            if (isCompleted) R.drawable.bg_checked_circle 
+            else R.drawable.bg_unchecked_circle
+        )
+        
+        // Set click listener to open CreateProgressActivity
+        cardView.setOnClickListener {
+            try {
+                val intent = android.content.Intent(requireContext(), CreateProgressActivity::class.java)
+                intent.putExtra(CreateProgressActivity.EXTRA_SCHEDULE_ID, schedule.id)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Log.e(TAG, "Open create progress", ex)
             }
-
-            // Add icon
-            addView(View(context).apply {
-                setBackgroundColor(resources.getColor(R.color.input_stroke, null))
-                layoutParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-            })
-
-            // Add text content
-            addView(LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
-                    leftMargin = dpToPx(12)
-                }
-
-                // Title
-                addView(TextView(context).apply {
-                    text = schedule.toString() // TODO: Use proper fields once model is available
-                    textSize = 14f
-                    setTextColor(resources.getColor(R.color.text_primary, null))
-                    setTypeface(null, android.graphics.Typeface.BOLD)
-                })
-
-                // Time
-                addView(TextView(context).apply {
-                    text = "08:00" // TODO: Format time from schedule
-                    textSize = 12f
-                    setTextColor(resources.getColor(R.color.text_secondary, null))
-                    setPadding(0, dpToPx(6), 0, 0)
-                })
-            })
-
-            // Add check circle
-            addView(View(context).apply {
-                setBackgroundResource(R.drawable.bg_unchecked_circle)
-                layoutParams = LinearLayout.LayoutParams(dpToPx(28), dpToPx(28))
-            })
-
-            // Set click listener
-            setOnClickListener {
-                try {
-                    val intent = android.content.Intent(requireContext(), ScheduleDetailActivity::class.java)
-                    intent.putExtra(ScheduleDetailActivity.EXTRA_SCHEDULE_ID, schedule.toString()) // TODO: Use proper ID
-                    startActivity(intent)
-                } catch (ex: Exception) {
-                    Log.e(TAG, "Open schedule details", ex)
-                }
-            }
-
-            container.addView(this)
         }
+        
+        container.addView(cardView)
     }
 
     private fun dpToPx(dp: Int): Int {
