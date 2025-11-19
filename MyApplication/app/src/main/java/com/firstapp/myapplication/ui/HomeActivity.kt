@@ -186,11 +186,11 @@ class HomeActivity : AppCompatActivity() {
         // Find views in the inflated layout
         val tvHabitName = cardView.findViewById<TextView>(R.id.tvHabitName)
         val tvTime = cardView.findViewById<TextView>(R.id.tvTime)
-        val ivHabitIcon = cardView.findViewById<android.view.View>(R.id.ivHabitIcon)
+        val ivHabitIcon = cardView.findViewById<android.widget.TextView>(R.id.ivHabitIcon)
         val ivStatus = cardView.findViewById<android.view.View>(R.id.ivStatus)
         
-        // Set habit name (fallback to notes or generic name)
-        tvHabitName.text = scheduleDto.notes ?: "Habit #${scheduleDto.id}"
+        // Set habit name (use actual habit name, fallback to notes or generic name)
+        tvHabitName.text = scheduleDto.habit?.name ?: scheduleDto.notes ?: "Habit #${scheduleDto.id}"
         
         // Format and set time
         val timeStr = scheduleDto.start_time?.let { time ->
@@ -203,8 +203,10 @@ class HomeActivity : AppCompatActivity() {
         } ?: "--:--"
         tvTime.text = timeStr
         
-        // Set habit icon (placeholder colored square)
-        ivHabitIcon.setBackgroundColor(resources.getColor(R.color.accent_purple_start, null))
+        // Set habit emoji instead of background color
+        val habitName = scheduleDto.habit?.name ?: ""
+        val emoji = getHabitEmoji(habitName)
+        ivHabitIcon.text = emoji
         
         // Set status icon (check circle or empty circle based on completion)
         var isCompleted = scheduleDto.status?.lowercase() == "completed"
@@ -261,6 +263,24 @@ class HomeActivity : AppCompatActivity() {
         }
         
         container.addView(cardView)
+    }
+
+    private fun getHabitEmoji(habitName: String): String {
+        return when (habitName.lowercase()) {
+            "reading", "read", "book", "study" -> "📚"
+            "exercise", "workout", "running", "run", "fitness", "gym" -> "🏃"
+            "meditation", "meditate", "mindfulness" -> "🧘"
+            "water", "hydration", "drink water" -> "💧"
+            "diet", "nutrition", "eating", "food" -> "🍎"
+            "sleep", "rest", "bedtime" -> "🛌"
+            "work", "coding", "programming", "computer" -> "💻"
+            "cleaning", "clean", "tidy" -> "🧹"
+            "writing", "write", "journal" -> "✍️"
+            "music", "listen", "audio" -> "🎧"
+            "goal", "target", "practice" -> "🎯"
+            "hygiene", "brush teeth", "dental" -> "🪥"
+            else -> "🏷️"
+        }
     }
     
     private fun dpToPx(dp: Int): Int {

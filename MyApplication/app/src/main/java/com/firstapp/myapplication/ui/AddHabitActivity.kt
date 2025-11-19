@@ -69,7 +69,8 @@ class AddHabitActivity : AppCompatActivity() {
             spHabitName.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
                     selectedCategoryId = if (position > 0 && position - 1 < categories.size) categories[position - 1].id else null
-                    if (etHabitName.text.toString().trim().isEmpty() && position > 0 && position - 1 < categories.size) {
+                    // Always update habit name when category is selected (not just when empty)
+                    if (position > 0 && position - 1 < categories.size) {
                         etHabitName.setText(categories[position - 1].name)
                     }
                 }
@@ -79,13 +80,15 @@ class AddHabitActivity : AppCompatActivity() {
                 }
             })
 
-            // populate emoji grid for categories (fallback emojis used if iconUrl not available)
+            // populate emoji grid for categories (emojis that match category names)
             val gl = findViewById<GridLayout>(R.id.glCategoryIcons)
             gl.removeAllViews()
-            val fallbackEmojis = listOf("💧","🏃","📚","🧘","🍎","🛌","💻","🧹","✍️","🎧","🎯","🪥")
-
+            
             categories.forEachIndexed { idx, cat ->
-                val emoji = fallbackEmojis.getOrNull(idx) ?: "🏷️"
+                // Use position-based emoji assignment to match backend order
+                val emojis = listOf("🤸‍♀️", "📚", "💻", "💧", "✍️", "🏃‍♂️", "🏷️")
+                val emoji = emojis.getOrNull(idx) ?: "🏷️"
+                
                 val tv = TextView(this@AddHabitActivity).apply {
                     text = emoji
                     textSize = 28f
@@ -100,7 +103,8 @@ class AddHabitActivity : AppCompatActivity() {
                         }
                         it.setBackgroundResource(R.drawable.bg_button_primary)
                         selectedCategoryId = cat.id
-                        if (etHabitName.text.toString().trim().isEmpty()) etHabitName.setText(cat.name)
+                        // Always update habit name when emoji is selected
+                        etHabitName.setText(cat.name)
                     }
                 }
 
@@ -127,12 +131,10 @@ class AddHabitActivity : AppCompatActivity() {
             val hour = cal.get(Calendar.HOUR_OF_DAY)
             val minute = cal.get(Calendar.MINUTE)
             TimePickerDialog(this, { _, h, m ->
-                val ampm = if (h >= 12) "PM" else "AM"
-                val hour12 = if (h % 12 == 0) 12 else h % 12
-                val timeStr = String.format("%02d:%02d %s", hour12, m, ampm)
+                val timeStr = String.format("%02d:%02d", h, m)
                 selectedTime = timeStr
                 tvTimePicker.text = timeStr
-            }, hour, minute, false).show()
+            }, hour, minute, true).show()
         }
 
         // repeat buttons

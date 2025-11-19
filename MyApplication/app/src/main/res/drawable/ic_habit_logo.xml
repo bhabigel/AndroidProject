@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Background Circle -->
+    <path
+        android:pathData="M60,60m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.2"/>
+    
+    <!-- Main Circle -->
+    <path
+        android:pathData="M60,60m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0"
+        android:fillColor="#FFFFFF"/>
+    
+    <!-- Habit Symbol - Checkmark with Circle -->
+    <path
+        android:pathData="M60,60m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"
+        android:fillColor="#4CAF50"/>
+    
+    <!-- Checkmark -->
+    <path
+        android:pathData="M50 62l8 8 16-16"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillType="nonZero"/>
+    
+    <!-- Small decorative dots around -->
+    <path
+        android:pathData="M30,40m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.6"/>
+    
+    <path
+        android:pathData="M90,45m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.4"/>
+    
+    <path
+        android:pathData="M25,75m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.5"/>
+    
+    <path
+        android:pathData="M95,80m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"/>
+    
+</vector>

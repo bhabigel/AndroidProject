@@ -171,11 +171,11 @@ class HomeFragment : Fragment() {
         // Find views in the inflated layout
         val tvHabitName = cardView.findViewById<TextView>(R.id.tvHabitName)
         val tvTime = cardView.findViewById<TextView>(R.id.tvTime)
-        val ivHabitIcon = cardView.findViewById<View>(R.id.ivHabitIcon)
+        val ivHabitIcon = cardView.findViewById<TextView>(R.id.ivHabitIcon)
         val ivStatus = cardView.findViewById<View>(R.id.ivStatus)
         
-        // Set habit name (fallback to notes or generic name)
-        tvHabitName.text = schedule.notes ?: "Habit #${schedule.id}"
+        // Set habit name (use actual habit name, fallback to notes or generic name)
+        tvHabitName.text = schedule.habit?.name ?: schedule.notes ?: "Habit #${schedule.id}"
         
         // Format and set time
         val timeStr = schedule.start_time?.let { time ->
@@ -188,8 +188,10 @@ class HomeFragment : Fragment() {
         } ?: "--:--"
         tvTime.text = timeStr
         
-        // Set habit icon (placeholder colored square)
-        ivHabitIcon.setBackgroundColor(resources.getColor(R.color.accent_purple_start, null))
+        // Set habit emoji instead of background color
+        val habitName = schedule.habit?.name ?: ""
+        val emoji = getHabitEmoji(habitName)
+        ivHabitIcon.text = emoji
         
         // Set status icon (check circle or empty circle based on completion)
         var isCompleted = schedule.status?.lowercase() == "completed"
@@ -246,6 +248,24 @@ class HomeFragment : Fragment() {
         }
         
         container.addView(cardView)
+    }
+
+    private fun getHabitEmoji(habitName: String): String {
+        return when (habitName.lowercase()) {
+            "reading", "read", "book", "study" -> "📚"
+            "exercise", "workout", "running", "run", "fitness", "gym" -> "🏃"
+            "meditation", "meditate", "mindfulness" -> "🧘"
+            "water", "hydration", "drink water" -> "💧"
+            "diet", "nutrition", "eating", "food" -> "🍎"
+            "sleep", "rest", "bedtime" -> "🛌"
+            "work", "coding", "programming", "computer" -> "💻"
+            "cleaning", "clean", "tidy" -> "🧹"
+            "writing", "write", "journal" -> "✍️"
+            "music", "listen", "audio" -> "🎧"
+            "goal", "target", "practice" -> "🎯"
+            "hygiene", "brush teeth", "dental" -> "🪥"
+            else -> "🏷️"
+        }
     }
 
     private fun dpToPx(dp: Int): Int {

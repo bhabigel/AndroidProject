@@ -14,12 +14,14 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <ImageView
+        <TextView
             android:id="@+id/ivHabitIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:contentDescription="Habit icon" />
+            android:contentDescription="Habit icon"
+            android:gravity="center"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="0dp"

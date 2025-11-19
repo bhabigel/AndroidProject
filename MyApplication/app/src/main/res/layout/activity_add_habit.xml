@@ -107,7 +107,7 @@
                 android:background="@drawable/bg_input"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
-                android:text="08:00 AM"
+                android:text="08:00"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:layout_marginTop="8dp" />

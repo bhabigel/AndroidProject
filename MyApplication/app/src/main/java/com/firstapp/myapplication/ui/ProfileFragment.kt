@@ -102,48 +102,63 @@ class ProfileFragment : Fragment() {
     private fun loadHabits(container: LinearLayout) {
         lifecycleScope.launch {
             try {
-                val resp = Network.api.listHabits()
-                if (resp.isSuccessful) {
-                    val habits = resp.body() ?: emptyList()
+                val habitsResp = Network.api.listHabits()
+                val todayDate = java.time.LocalDate.now().toString()
+                val schedulesResp = Network.api.getSchedulesByDay(todayDate)
+                
+                if (habitsResp.isSuccessful && schedulesResp.isSuccessful) {
+                    val habits = habitsResp.body() ?: emptyList()
+                    val todaySchedules = schedulesResp.body() ?: emptyList()
                     container.removeAllViews()
                     
                     if (habits.isEmpty()) {
                         // Add sample habits for demo
-                        addHabitItem(container, "Drink rum", 84, "#6366F1")
-                        addHabitItem(container, "Follow treasure map", 100, "#10B981")
-                        addHabitItem(container, "Run from Kraken", 0, "#8B5CF6")
-                        addHabitItem(container, "Walk the plank", 0, "#8B5CF6")
-                        addHabitItem(container, "Journal adventures", 0, "#8B5CF6")
+                        addHabitItem(container, "Other", 50, "#6366F1", -1)
+                        addHabitItem(container, "Reading", 50, "#10B981", -1) 
+                        addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
+                        addHabitItem(container, "Study", 50, "#8B5CF6", -1)
                     } else {
                         for (habit in habits) {
-                            val name = habit.name
-                            val progress = 50 // Calculate from actual data
-                            addHabitItem(container, name, progress, "#6366F1")
+                            // Calculate progress based on today's schedules for this habit
+                            val habitSchedules = todaySchedules.filter { it.habit?.name == habit.name }
+                            val progress = if (habitSchedules.isEmpty()) {
+                                0
+                            } else {
+                                val completedCount = habitSchedules.count { it.status?.lowercase() == "completed" }
+                                val totalCount = habitSchedules.size
+                                (completedCount * 100) / totalCount
+                            }
+                            
+                            val color = when {
+                                progress == 100 -> "#10B981" // Green
+                                progress >= 50 -> "#6366F1"  // Blue
+                                else -> "#8B5CF6"            // Purple
+                            }
+                            
+                            addHabitItem(container, habit.name, progress, color, habit.id)
                         }
                     }
                 } else {
-                    // Add sample habits
+                    // Fallback to sample data
                     container.removeAllViews()
-                    addHabitItem(container, "Drink rum", 84, "#6366F1")
-                    addHabitItem(container, "Follow treasure map", 100, "#10B981")
-                    addHabitItem(container, "Run from Kraken", 0, "#8B5CF6")
-                    addHabitItem(container, "Walk the plank", 0, "#8B5CF6")
-                    addHabitItem(container, "Journal adventures", 0, "#8B5CF6")
+                    addHabitItem(container, "Other", 50, "#6366F1", -1)
+                    addHabitItem(container, "Reading", 50, "#10B981", -1) 
+                    addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
+                    addHabitItem(container, "Study", 50, "#8B5CF6", -1)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "habits fetch", e)
-                // Add sample habits
+                Log.e(TAG, "habits/schedules fetch", e)
+                // Fallback to sample data
                 container.removeAllViews()
-                addHabitItem(container, "Drink rum", 84, "#6366F1")
-                addHabitItem(container, "Follow treasure map", 100, "#10B981")
-                addHabitItem(container, "Run from Kraken", 0, "#8B5CF6")
-                addHabitItem(container, "Walk the plank", 0, "#8B5CF6")
-                addHabitItem(container, "Journal adventures", 0, "#8B5CF6")
+                addHabitItem(container, "Other", 50, "#6366F1", -1)
+                addHabitItem(container, "Reading", 50, "#10B981", -1)
+                addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
+                addHabitItem(container, "Study", 50, "#8B5CF6", -1)
             }
         }
     }
 
-    private fun addHabitItem(container: LinearLayout, name: String, progress: Int, iconColor: String) {
+    private fun addHabitItem(container: LinearLayout, name: String, progress: Int, iconColor: String, habitId: Int) {
         val context = requireContext()
         
         // Main habit row
@@ -195,6 +210,26 @@ class ProfileFragment : Fragment() {
 
         habitRow.addView(textContainer)
 
+        // Delete button (only for real habits, not sample data)
+        if (habitId > 0) {
+            val deleteButton = TextView(context).apply {
+                text = "🗑️"
+                textSize = 16f
+                setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
+                setBackgroundResource(android.R.drawable.btn_default)
+                setOnClickListener {
+                    deleteHabit(habitId, container, habitRow)
+                }
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    leftMargin = dpToPx(8)
+                }
+            }
+            habitRow.addView(deleteButton)
+        }
+
         // Percentage text
         val percentText = TextView(context).apply {
             text = "$progress%"
@@ -215,6 +250,12 @@ class ProfileFragment : Fragment() {
 
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    private fun deleteHabit(habitId: Int, container: LinearLayout, habitRow: LinearLayout) {
+        // Visual deletion only (no backend call)
+        container.removeView(habitRow)
+        Toast.makeText(requireContext(), "Habit removed from list", Toast.LENGTH_SHORT).show()
     }
 
     private fun uploadImage(uri: Uri) {
