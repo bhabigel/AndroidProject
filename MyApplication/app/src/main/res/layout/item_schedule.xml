@@ -51,7 +51,10 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:contentDescription="Schedule status" />
+            android:contentDescription="Schedule status"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

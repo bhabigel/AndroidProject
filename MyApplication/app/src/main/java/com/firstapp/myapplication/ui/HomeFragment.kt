@@ -192,11 +192,47 @@ class HomeFragment : Fragment() {
         ivHabitIcon.setBackgroundColor(resources.getColor(R.color.accent_purple_start, null))
         
         // Set status icon (check circle or empty circle based on completion)
-        val isCompleted = schedule.status == "completed" // Adjust based on your status values
+        var isCompleted = schedule.status?.lowercase() == "completed"
         ivStatus.setBackgroundResource(
             if (isCompleted) R.drawable.bg_checked_circle 
             else R.drawable.bg_unchecked_circle
         )
+        
+        // Add click listener to status circle to toggle completion
+        ivStatus.setOnClickListener {
+            isCompleted = !isCompleted
+            ivStatus.setBackgroundResource(
+                if (isCompleted) R.drawable.bg_checked_circle 
+                else R.drawable.bg_unchecked_circle
+            )
+            
+            // Update schedule status via API
+            lifecycleScope.launch {
+                try {
+                    val updateDto = com.firstapp.myapplication.models.UpdateScheduleDto(
+                        status = if (isCompleted) "Completed" else "Planned"
+                    )
+                    val response = Network.api.updateSchedule(schedule.id, updateDto)
+                    if (!response.isSuccessful) {
+                        Log.e(TAG, "Failed to update schedule status: ${response.code()}")
+                        // Revert visual change if API call failed
+                        isCompleted = !isCompleted
+                        ivStatus.setBackgroundResource(
+                            if (isCompleted) R.drawable.bg_checked_circle 
+                            else R.drawable.bg_unchecked_circle
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error updating schedule status", e)
+                    // Revert visual change if API call failed
+                    isCompleted = !isCompleted
+                    ivStatus.setBackgroundResource(
+                        if (isCompleted) R.drawable.bg_checked_circle 
+                        else R.drawable.bg_unchecked_circle
+                    )
+                }
+            }
+        }
         
         // Set click listener to open ScheduleDetailActivity
         cardView.setOnClickListener {

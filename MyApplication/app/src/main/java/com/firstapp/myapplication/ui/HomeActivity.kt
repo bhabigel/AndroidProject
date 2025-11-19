@@ -176,58 +176,91 @@ class HomeActivity : AppCompatActivity() {
     }
     
     private fun addScheduleCard(container: LinearLayout, schedule: Any) {
-        // Create card layout programmatically (simplified version)
-        val card = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setBackgroundResource(R.drawable.bg_card)
-            setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(72)
-            ).apply {
-                topMargin = dpToPx(8)
+        // Cast schedule to proper type
+        val scheduleDto = schedule as? com.firstapp.myapplication.models.ScheduleResponseDto ?: return
+        
+        // Create card layout matching the expected design
+        val layoutInflater = android.view.LayoutInflater.from(this)
+        val cardView = layoutInflater.inflate(R.layout.item_schedule, container, false)
+        
+        // Find views in the inflated layout
+        val tvHabitName = cardView.findViewById<TextView>(R.id.tvHabitName)
+        val tvTime = cardView.findViewById<TextView>(R.id.tvTime)
+        val ivHabitIcon = cardView.findViewById<android.view.View>(R.id.ivHabitIcon)
+        val ivStatus = cardView.findViewById<android.view.View>(R.id.ivStatus)
+        
+        // Set habit name (fallback to notes or generic name)
+        tvHabitName.text = scheduleDto.notes ?: "Habit #${scheduleDto.id}"
+        
+        // Format and set time
+        val timeStr = scheduleDto.start_time?.let { time ->
+            // Extract time portion from ISO datetime or use as-is
+            if (time.contains('T')) {
+                val timePart = time.substringAfter('T').substringBefore('+').substringBefore('Z')
+                val parts = timePart.split(':')
+                if (parts.size >= 2) "${parts[0]}:${parts[1]}" else timePart
+            } else time
+        } ?: "--:--"
+        tvTime.text = timeStr
+        
+        // Set habit icon (placeholder colored square)
+        ivHabitIcon.setBackgroundColor(resources.getColor(R.color.accent_purple_start, null))
+        
+        // Set status icon (check circle or empty circle based on completion)
+        var isCompleted = scheduleDto.status?.lowercase() == "completed"
+        ivStatus.setBackgroundResource(
+            if (isCompleted) R.drawable.bg_checked_circle 
+            else R.drawable.bg_unchecked_circle
+        )
+        
+        // Add click listener to status circle to toggle completion
+        ivStatus.setOnClickListener {
+            isCompleted = !isCompleted
+            ivStatus.setBackgroundResource(
+                if (isCompleted) R.drawable.bg_checked_circle 
+                else R.drawable.bg_unchecked_circle
+            )
+            
+            // Update schedule status via API
+            lifecycleScope.launch {
+                try {
+                    val updateDto = com.firstapp.myapplication.models.UpdateScheduleDto(
+                        status = if (isCompleted) "Completed" else "Planned"
+                    )
+                    val response = Network.api.updateSchedule(scheduleDto.id, updateDto)
+                    if (!response.isSuccessful) {
+                        Log.e(TAG, "Failed to update schedule status: ${response.code()}")
+                        // Revert visual change if API call failed
+                        isCompleted = !isCompleted
+                        ivStatus.setBackgroundResource(
+                            if (isCompleted) R.drawable.bg_checked_circle 
+                            else R.drawable.bg_unchecked_circle
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error updating schedule status", e)
+                    // Revert visual change if API call failed
+                    isCompleted = !isCompleted
+                    ivStatus.setBackgroundResource(
+                        if (isCompleted) R.drawable.bg_checked_circle 
+                        else R.drawable.bg_unchecked_circle
+                    )
+                }
             }
         }
         
-        // Add icon placeholder
-        val icon = android.view.View(this).apply {
-            setBackgroundColor(resources.getColor(R.color.input_stroke, null))
-            layoutParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-        }
-        card.addView(icon)
-        
-        // Add text content
-        val textContainer = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
-                leftMargin = dpToPx(12)
+        // Set click listener to open ScheduleDetailActivity
+        cardView.setOnClickListener {
+            try {
+                val intent = Intent(this, ScheduleDetailActivity::class.java)
+                intent.putExtra(ScheduleDetailActivity.EXTRA_SCHEDULE_ID, scheduleDto.id)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Log.e(TAG, "Open schedule details", ex)
             }
         }
         
-        val titleTv = TextView(this).apply {
-            text = "Schedule item"
-            textSize = 14f
-            setTextColor(resources.getColor(R.color.text_primary, null))
-            setTypeface(null, android.graphics.Typeface.BOLD)
-        }
-        val timeTv = TextView(this).apply {
-            text = "08:00"
-            textSize = 12f
-            setTextColor(resources.getColor(R.color.text_secondary, null))
-            setPadding(0, dpToPx(6), 0, 0)
-        }
-        textContainer.addView(titleTv)
-        textContainer.addView(timeTv)
-        card.addView(textContainer)
-        
-        // Add check circle
-        val check = android.view.View(this).apply {
-            setBackgroundResource(R.drawable.bg_unchecked_circle)
-            layoutParams = LinearLayout.LayoutParams(dpToPx(28), dpToPx(28))
-        }
-        card.addView(check)
-        
-        container.addView(card)
+        container.addView(cardView)
     }
     
     private fun dpToPx(dp: Int): Int {
