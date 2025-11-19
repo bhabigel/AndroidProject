@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_default"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:paddingTop="40dp">
 
     <!-- Header with back and save buttons -->
     <RelativeLayout

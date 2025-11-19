@@ -13,14 +13,24 @@ import com.firstapp.myapplication.auth.AuthManager
 import com.firstapp.myapplication.network.Network
 import android.widget.Button
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeActivity : AppCompatActivity() {
     companion object { private const val TAG = "HomeActivity" }
+    
+    private var currentDate: LocalDate = LocalDate.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         AuthManager.init(applicationContext)
+
+        // Setup date navigation
+        setupDateNavigation()
+        
+        // Update date display
+        updateDateDisplay()
 
         // Wire up FAB and navigation
         val btnFAB = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.btnAddFAB)
@@ -45,19 +55,79 @@ class HomeActivity : AppCompatActivity() {
         fetchSchedules()
     }
 
+    private fun setupDateNavigation() {
+        val btnPrevDay = findViewById<TextView>(R.id.btnPrevDay)
+        val btnNextDay = findViewById<TextView>(R.id.btnNextDay)
+        
+        btnPrevDay.setOnClickListener {
+            currentDate = currentDate.minusDays(1)
+            updateDateDisplay()
+            fetchSchedules()
+        }
+        
+        btnNextDay.setOnClickListener {
+            currentDate = currentDate.plusDays(1)
+            updateDateDisplay()
+            fetchSchedules()
+        }
+    }
+
+    private fun updateDateDisplay() {
+        val dateText = findViewById<TextView>(R.id.tvDate)
+        val titleText = findViewById<TextView>(R.id.tvTodayTitle)
+        
+        val formatter = DateTimeFormatter.ofPattern("EEEE, MMM d")
+        dateText.text = currentDate.format(formatter)
+        
+        // Update title based on selected date
+        val today = LocalDate.now()
+        titleText.text = when {
+            currentDate.isEqual(today) -> "Progress"
+            currentDate.isEqual(today.minusDays(1)) -> "Yesterday" 
+            currentDate.isEqual(today.plusDays(1)) -> "Tomorrow"
+            currentDate.isBefore(today) -> "Past day"
+            else -> "Future day"
+        }
+    }
+
     private fun fetchSchedules() {
         val container = findViewById<LinearLayout>(R.id.llSchedules)
         lifecycleScope.launch {
             try {
-                val resp = Network.api.getSchedulesByDay(null)
+                // Format date for API call (YYYY-MM-DD)
+                val dateStr = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val resp = Network.api.getSchedulesByDay(dateStr)
+                
                 if (resp.isSuccessful) {
                     val list = resp.body() ?: emptyList()
                     container.removeAllViews()
                     
-                    // Group by time of day
-                    val morning = list.filter { it.start_time?.startsWith("0") == true || it.start_time?.startsWith("1") == true }
-                    val afternoon = list.filter { it.start_time?.startsWith("1") == true || it.start_time?.startsWith("2") == true }
-                    val night = list.filter { it.start_time?.startsWith("1") == true || it.start_time?.startsWith("2") == true }
+                    if (list.isEmpty()) {
+                        // Show empty state
+                        val emptyView = TextView(this@HomeActivity).apply {
+                            text = "No schedules for this day"
+                            textSize = 16f
+                            setTextColor(resources.getColor(R.color.text_secondary, null))
+                            gravity = android.view.Gravity.CENTER
+                            setPadding(0, dpToPx(32), 0, dpToPx(32))
+                        }
+                        container.addView(emptyView)
+                        return@launch
+                    }
+                    
+                    // Group by time of day with better hour detection
+                    val morning = list.filter { 
+                        val hour = extractHour(it.start_time)
+                        hour in 0..11
+                    }
+                    val afternoon = list.filter { 
+                        val hour = extractHour(it.start_time)
+                        hour in 12..17
+                    }
+                    val night = list.filter { 
+                        val hour = extractHour(it.start_time)
+                        hour in 18..23
+                    }
                     
                     if (morning.isNotEmpty()) {
                         addSectionHeader(container, "🌞 Morning")
@@ -77,6 +147,21 @@ class HomeActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e(TAG, "fetch schedules", e)
             }
+        }
+    }
+
+    private fun extractHour(timeStr: String?): Int {
+        return try {
+            if (timeStr?.contains('T') == true) {
+                val timePart = timeStr.substringAfter('T').substringBefore('+').substringBefore('Z')
+                timePart.split(':')[0].toInt()
+            } else if (timeStr?.contains(':') == true) {
+                timeStr.split(':')[0].toInt()
+            } else {
+                12 // Default to noon if parsing fails
+            }
+        } catch (e: Exception) {
+            12
         }
     }
     

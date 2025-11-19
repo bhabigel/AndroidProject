@@ -11,7 +11,7 @@
         android:layout_above="@id/bottomNav"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="16dp"
+        android:paddingTop="40dp"
         android:paddingBottom="16dp">
 
         <LinearLayout
@@ -67,12 +67,13 @@
                 android:gravity="center_vertical">
 
                 <!-- Profile Image Placeholder -->
-                <de.hdodenhof.circleimageview.CircleImageView
+                <ImageView
                     android:id="@+id/ivProfilePicture"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:src="@drawable/ic_profile"
-                    android:background="@color/input_stroke" />
+                    android:background="@color/input_stroke"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="0dp"

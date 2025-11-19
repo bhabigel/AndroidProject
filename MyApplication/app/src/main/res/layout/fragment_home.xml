@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_dark"
     android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    android:paddingTop="40dp">
 
     <TextView
         android:id="@+id/tvTodayTitle"
@@ -16,15 +16,52 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
+    <!-- Date Navigation Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Monday, Jul 10"
-        android:textColor="@color/text_primary"
-        android:layout_marginTop="4dp"
-        android:textSize="14sp"
-        android:alpha="0.7" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/btnPrevDay"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="‹"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Monday, Jul 10"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/btnNextDay"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="›"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

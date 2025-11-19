@@ -12,7 +12,7 @@
         android:layout_above="@id/bottomButtons"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="16dp"
+        android:paddingTop="40dp"
         android:paddingBottom="16dp">
 
         <LinearLayout
