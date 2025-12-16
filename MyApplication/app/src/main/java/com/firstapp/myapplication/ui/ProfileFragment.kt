@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import coil.load
 import com.firstapp.myapplication.R
 import com.firstapp.myapplication.auth.AuthManager
 import com.firstapp.myapplication.network.Network
@@ -28,11 +29,19 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
+
 class ProfileFragment : Fragment() {
     companion object { private const val TAG = "ProfileFragment" }
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { uploadImage(it) }
+    }
+
+    private val editProfileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            // Refresh profile when returning from edit
+            view?.let { loadProfile(it) }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,7 +57,7 @@ class ProfileFragment : Fragment() {
         val btnLogout = view.findViewById<Button>(R.id.btnLogout)
         
         btnEditProfile?.setOnClickListener {
-            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+            editProfileLauncher.launch(Intent(requireContext(), EditProfileActivity::class.java))
         }
         
         btnAddNewHabit?.setOnClickListener {
@@ -84,6 +93,11 @@ class ProfileFragment : Fragment() {
                     val profile = resp.body()
                     tvName.text = profile?.username ?: "User"
                     tvEmail.text = profile?.email ?: "email@example.com"
+                    
+                    // Load profile image if available
+                    profile?.profileImageUrl?.let { imageUrl ->
+                        loadProfileImage(ivAvatar, imageUrl)
+                    }
                 } else {
                     tvName.text = "User"
                     tvEmail.text = "email@example.com"
@@ -111,13 +125,7 @@ class ProfileFragment : Fragment() {
                     val todaySchedules = schedulesResp.body() ?: emptyList()
                     container.removeAllViews()
                     
-                    if (habits.isEmpty()) {
-                        // Add sample habits for demo
-                        addHabitItem(container, "Other", 50, "#6366F1", -1)
-                        addHabitItem(container, "Reading", 50, "#10B981", -1) 
-                        addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
-                        addHabitItem(container, "Study", 50, "#8B5CF6", -1)
-                    } else {
+                    if (habits.isNotEmpty()) {
                         for (habit in habits) {
                             // Calculate progress based on today's schedules for this habit
                             val habitSchedules = todaySchedules.filter { it.habit?.name == habit.name }
@@ -139,21 +147,13 @@ class ProfileFragment : Fragment() {
                         }
                     }
                 } else {
-                    // Fallback to sample data
+                    // Network error - show empty
                     container.removeAllViews()
-                    addHabitItem(container, "Other", 50, "#6366F1", -1)
-                    addHabitItem(container, "Reading", 50, "#10B981", -1) 
-                    addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
-                    addHabitItem(container, "Study", 50, "#8B5CF6", -1)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "habits/schedules fetch", e)
-                // Fallback to sample data
+                // Network error - show empty
                 container.removeAllViews()
-                addHabitItem(container, "Other", 50, "#6366F1", -1)
-                addHabitItem(container, "Reading", 50, "#10B981", -1)
-                addHabitItem(container, "nothing", 50, "#8B5CF6", -1)
-                addHabitItem(container, "Study", 50, "#8B5CF6", -1)
             }
         }
     }
@@ -214,15 +214,16 @@ class ProfileFragment : Fragment() {
         if (habitId > 0) {
             val deleteButton = TextView(context).apply {
                 text = "🗑️"
-                textSize = 16f
-                setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
-                setBackgroundResource(android.R.drawable.btn_default)
+                textSize = 20f
+                setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10))
+                setBackgroundResource(R.drawable.bg_card)
+                gravity = Gravity.CENTER
                 setOnClickListener {
                     deleteHabit(habitId, container, habitRow)
                 }
                 layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    dpToPx(40),
+                    dpToPx(40)
                 ).apply {
                     leftMargin = dpToPx(8)
                 }
@@ -256,6 +257,25 @@ class ProfileFragment : Fragment() {
         // Visual deletion only (no backend call)
         container.removeView(habitRow)
         Toast.makeText(requireContext(), "Habit removed from list", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun loadProfileImage(imageView: ShapeableImageView, imageUrl: String) {
+        try {
+            // Use Coil to load image from URL
+            val fullUrl = if (imageUrl.startsWith("http")) {
+                imageUrl
+            } else {
+                "http://10.0.2.2:8080$imageUrl"
+            }
+            
+            imageView.load(fullUrl) {
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+                error(R.drawable.ic_launcher_foreground)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading profile image", e)
+        }
     }
 
     private fun uploadImage(uri: Uri) {

@@ -48,7 +48,6 @@ class CreateProgressActivity : AppCompatActivity() {
             val logged = etLogged.text.toString().trim()
             val loggedInt = logged.toIntOrNull()
             val notes = etNotes.text.toString().trim()
-            val completed = cbCompleted.isChecked
 
             lifecycleScope.launch {
                 try {
@@ -58,7 +57,7 @@ class CreateProgressActivity : AppCompatActivity() {
                     )
                     if (loggedInt != null) body["logged_time"] = loggedInt
                     if (notes.isNotEmpty()) body["notes"] = notes
-                    body["is_completed"] = completed
+                    body["is_completed"] = true
 
                     val resp = Network.api.createProgress(body)
                     if (resp.isSuccessful) {

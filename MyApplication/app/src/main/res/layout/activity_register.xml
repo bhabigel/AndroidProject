@@ -2,54 +2,118 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:background="@color/bg_default">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="80dp">
 
-        <TextView
+        <!-- Segmented toggle for Login / Register -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:textSize="24sp"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:background="@color/card_bg"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/toggleLogin"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_toggle_selected"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="Login"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/toggleRegister"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_toggle_selected"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:state_selected="false"
+                android:text="Register"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Username" />
+            android:layout_height="52dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:hint="Username"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp" />
 
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:hint="Email"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp"
+            android:inputType="textEmailAddress"
             android:layout_marginTop="8dp" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:hint="Password"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp"
             android:inputType="textPassword"
             android:layout_marginTop="8dp" />
 
         <EditText
             android:id="@+id/etPasswordConfirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_input"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:hint="Confirm Password"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
+            android:textSize="15sp"
             android:inputType="textPassword"
             android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/btnRegisterSubmit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_button_primary"
             android:text="Register"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textStyle="bold"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

@@ -47,7 +47,6 @@ class AddHabitActivity : AppCompatActivity() {
         val btnWeekends = findViewById<TextView>(R.id.btnWeekends)
         val btnCustom = findViewById<TextView>(R.id.btnCustom)
         val tvChoosePartner = findViewById<TextView>(R.id.tvChoosePartner)
-        val switchReminders = findViewById<android.widget.Switch>(R.id.switchReminders)
 
         val btnCreate = findViewById<Button>(R.id.btnCreate)
         val btnCancel = findViewById<Button>(R.id.btnCancel)
@@ -163,7 +162,6 @@ class AddHabitActivity : AppCompatActivity() {
             val unit = spGoalUnit.selectedItem?.toString() ?: "times"
             val nameInput = etHabitName.text.toString().trim()
             val descInput = etHabitDescription.text.toString().trim()
-            val remindersOn = switchReminders.isChecked
 
             // Backend requires name (string) and categoryId (number) and goal (string).
             if (amount.isEmpty()) {

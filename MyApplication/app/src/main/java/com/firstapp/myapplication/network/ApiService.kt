@@ -35,6 +35,9 @@ interface ApiService {
     @POST("auth/local/logout")
     suspend fun logout(): Response<Void>
 
+    @POST("auth/google")
+    suspend fun googleLogin(@Body body: GoogleLoginRequest): Response<AuthResponse>
+
     @POST("auth/reset-password-via-email")
     suspend fun resetPasswordViaEmail(@Body body: Map<String, String>): Response<Map<String, String>>
 
@@ -75,7 +78,7 @@ interface ApiService {
     suspend fun createWeekdayRecurringSchedule(@Body request: ScheduleRequestDto): Response<List<ScheduleResponseDto>>
 
     @POST("progress")
-    suspend fun createProgress(@Body body: Map<String, Any>): Response<Map<String, Any>>
+    suspend fun createProgress(@Body body: Map<String, @JvmSuppressWildcards Any>): Response<Map<String, Any>>
 
     @POST("auth/local/refresh")
     suspend fun refresh(@Body body: Map<String, String>): Response<AuthResponse>

@@ -9,74 +9,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
-
-        <!-- App Title -->
-        <TextView
-            android:id="@+id/tvAppTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Progr3SS"
-            android:textColor="@color/text_primary"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/tvSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Habit Planner &amp; Tracker"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="18dp" />
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="80dp">
 
         <!-- Segmented toggle for Login / Register -->
+
+        <!-- Email label -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:background="@color/card_bg"
-            android:padding="3dp"
-            android:layout_marginBottom="20dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:background="@color/card_bg"
+            android:clipChildren="false"
             android:clipToPadding="false"
-            android:clipChildren="false">
+            android:orientation="horizontal"
+            android:padding="3dp">
 
             <TextView
                 android:id="@+id/toggleLogin"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Login"
-                android:textColor="@color/text_primary"
                 android:background="@drawable/bg_toggle_selected"
+                android:gravity="center"
                 android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+                android:paddingRight="8dp"
+                android:text="Login"
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:id="@+id/toggleRegister"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Register"
-                android:textColor="@color/text_primary"
+                android:layout_marginStart="6dp"
                 android:background="@drawable/bg_toggle_selected"
+                android:gravity="center"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:layout_marginStart="6dp"
-                android:state_selected="false" />
+                android:state_selected="false"
+                android:text="Register"
+                android:textColor="@color/text_primary" />
         </LinearLayout>
 
-        <!-- Email label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Email"
             android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            android:layout_marginBottom="8dp" />
+            android:textSize="13sp" />
 
         <!-- Email input -->
         <EditText
@@ -85,27 +68,27 @@
             android:layout_height="52dp"
             android:background="@drawable/bg_input"
             android:hint="your@email.com"
+            android:inputType="textEmailAddress"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_muted"
-            android:textSize="15sp"
-            android:inputType="textEmailAddress" />
+            android:textSize="15sp" />
 
         <!-- Password input + forgot -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Password"
                 android:textColor="@color/text_primary"
-                android:textSize="13sp"
-                android:layout_marginBottom="8dp" />
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -113,22 +96,22 @@
                 android:layout_height="52dp"
                 android:background="@drawable/bg_input"
                 android:hint="Your password"
+                android:inputType="textPassword"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/text_primary"
                 android:textColorHint="@color/text_muted"
-                android:textSize="15sp"
-                android:inputType="textPassword" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tvForgot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
                 android:text="Forgot password?"
                 android:textColor="@color/text_primary"
-                android:textSize="13sp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="end" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Primary Login button -->
@@ -139,48 +122,10 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_button_primary"
             android:text="Log in →"
+            android:textAllCaps="false"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
-            android:textAllCaps="false"
             android:textStyle="bold" />
-
-        <!-- divider + or login with -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="18dp">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/input_stroke" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  or login with  "
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/input_stroke" />
-        </LinearLayout>
-
-        <!-- Google button -->
-        <Button
-            android:id="@+id/btnGoogle"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#2B2935"
-            android:text="G  Google"
-            android:textColor="@color/text_primary" />
 
         <!-- Hidden compatibility button (existing code expects this id) -->
         <Button

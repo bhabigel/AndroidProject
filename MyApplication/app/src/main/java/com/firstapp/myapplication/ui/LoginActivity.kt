@@ -16,17 +16,21 @@ import com.firstapp.myapplication.network.SignInRequest
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
-    companion object { private const val TAG = "LoginActivity" }
+    companion object { 
+        private const val TAG = "LoginActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         AuthManager.init(applicationContext)
+        
+        // Hide the action bar
+        supportActionBar?.hide()
 
         val emailEt = findViewById<EditText>(R.id.etEmail)
         val passwordEt = findViewById<EditText>(R.id.etPassword)
         val signInBtn = findViewById<Button>(R.id.btnSignIn)
-        val googleBtn = findViewById<Button>(R.id.btnGoogle)
         
         // Toggle buttons
         val toggleLogin = findViewById<TextView>(R.id.toggleLogin)
@@ -35,10 +39,6 @@ class LoginActivity : AppCompatActivity() {
         toggleLogin.isSelected = true
         toggleRegister.setOnClickListener {
             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-        }
-
-        googleBtn.setOnClickListener {
-            Toast.makeText(this, "Google login not implemented yet", Toast.LENGTH_SHORT).show()
         }
 
         signInBtn.setOnClickListener {

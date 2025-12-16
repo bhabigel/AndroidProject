@@ -128,14 +128,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveProfile() {
         val username = findViewById<EditText>(R.id.etUsername).text.toString().trim()
-        val email = findViewById<EditText>(R.id.etEmail).text.toString().trim()
         val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
-
-        // Basic email validation
-        if (email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         lifecycleScope.launch {
             try {
@@ -145,13 +138,13 @@ class EditProfileActivity : AppCompatActivity() {
                 // Create UpdateProfileDto with only non-empty fields
                 val updateData = UpdateProfileDto(
                     username = if (username.isNotEmpty()) username else null,
-                    email = if (email.isNotEmpty()) email else null,
                     description = if (description.isNotEmpty()) description else null
                 )
 
                 val response = Network.api.updateProfile(updateData)
                 if (response.isSuccessful) {
                     Toast.makeText(this@EditProfileActivity, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                    setResult(RESULT_OK)
                     finish()
                 } else {
                     val errorBody = response.errorBody()?.string()

@@ -16,11 +16,25 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class RegisterActivity : AppCompatActivity() {
-    companion object { private const val TAG = "RegisterActivity" }
+    companion object { 
+        private const val TAG = "RegisterActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        
+        // Hide the action bar
+        supportActionBar?.hide()
+
+        // Toggle buttons
+        val toggleLogin = findViewById<android.widget.TextView>(R.id.toggleLogin)
+        val toggleRegister = findViewById<android.widget.TextView>(R.id.toggleRegister)
+        
+        toggleRegister.isSelected = true
+        toggleLogin.setOnClickListener {
+            finish() // Go back to login
+        }
 
         val nameEt = findViewById<EditText>(R.id.etName)
         val emailEt = findViewById<EditText>(R.id.etEmail)

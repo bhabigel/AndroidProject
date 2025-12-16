@@ -2,8 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:paddingTop="40dp">
+    android:background="@color/bg_default"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    android:paddingTop="60dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Progress"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
@@ -22,32 +26,41 @@
             android:id="@+id/etDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date (yyyy-MM-dd)" />
+            android:hint="Date (yyyy-MM-dd)"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted" />
 
         <EditText
             android:id="@+id/etLoggedTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:hint="Logged time (minutes)" />
+            android:hint="Logged time (minutes)"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted" />
 
         <EditText
             android:id="@+id/etNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Notes (optional)" />
+            android:hint="Notes (optional)"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted" />
 
         <CheckBox
             android:id="@+id/cbCompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completed" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:text="Completed"
+            android:textColor="@color/text_primary" />
 
         <Button
             android:id="@+id/btnSubmitProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Submit Progress"
+            android:textColor="@color/text_primary"
             android:layout_marginTop="12dp" />
 
     </LinearLayout>

@@ -51,6 +51,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     // Lifecycle (ViewModel / lifecycleScope convenience)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    // Image loading
+    implementation("io.coil-kt:coil:2.5.0")
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

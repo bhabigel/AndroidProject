@@ -434,7 +434,6 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 when (scheduleStatus.lowercase()) {
                     "completed" -> 100
                     "skipped" -> 0
-                    "planned" -> 25 // Assuming planned means some progress but not complete
                     else -> 0
                 }
             }
